@@ -5,8 +5,10 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Toast;
+import android.text.Editable;
+import android.text.TextWatcher;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,16 +35,103 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Capturamos los campos de texto
+        final EditText camas = (EditText) findViewById(R.id.bedNumber);
+        final EditText sillas = (EditText) findViewById(R.id.chairNumber);
+        final EditText mesas = (EditText) findViewById(R.id.tableNumber);
+        final EditText sillones = (EditText) findViewById(R.id.couchNumber);
 
+        // Default 0
+        camas.setText("0");
+        sillas.setText("0");
+        mesas.setText("0");
+        sillones.setText("0");
+
+        // Listener para los campos de texto
+        camas.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 1 && s.charAt(0) == '0') {
+                    camas.setText(s.subSequence(1, s.length()));
+                    camas.setSelection(camas.getText().length());
+                }
+                if (s.toString().isEmpty()) {
+                    camas.setText("0");
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+        });
+
+        sillas.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 1 && s.charAt(0) == '0') {
+                    sillas.setText(s.subSequence(1, s.length()));
+                    sillas.setSelection(sillas.getText().length());
+                }
+                if (s.toString().isEmpty()) {
+                    sillas.setText("0");
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+        mesas.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 1 && s.charAt(0) == '0') {
+                    mesas.setText(s.subSequence(1, s.length()));
+                    mesas.setSelection(mesas.getText().length());
+                }
+                if (s.toString().isEmpty()) {
+                    mesas.setText("0");
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+        sillones.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 1 && s.charAt(0) == '0') {
+                    sillones.setText(s.subSequence(1, s.length()));
+                    sillones.setSelection(sillones.getText().length());
+                }
+                if (s.toString().isEmpty()) {
+                    sillones.setText("0");
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+        });
     }
 
     // Creación de un cuadro de dialogo para confirmar pedido
     private void showDialog() throws Resources.NotFoundException {
-        CheckBox sabanas = (CheckBox) findViewById(R.id.checkBox_sabanas);
-        CheckBox toallas = (CheckBox) findViewById(R.id.checkBox_toallas);
-        CheckBox almohadas = (CheckBox) findViewById(R.id.checkBox_almohadas);
-        
-        if (!sabanas.isChecked()) {
+        EditText camas = (EditText) findViewById(R.id.bedNumber);
+        EditText sillas = (EditText) findViewById(R.id.chairNumber);
+        EditText mesas = (EditText) findViewById(R.id.tableNumber);
+        EditText sillones = (EditText) findViewById(R.id.couchNumber);
+
+        if ((camas.getText().toString().equals("0") && sillas.getText().toString().equals("0") && mesas.getText().toString().equals("0") && sillones.getText().toString().equals("0"))) {
             // Mostramos un mensaje emergente;
             Toast.makeText(getApplicationContext(), "Selecciona al menos un elemento", Toast.LENGTH_SHORT).show();
         } else {
@@ -56,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int whichButton) {
 
                                     // 1. Extraer los datos de la vista
-
                                     // 2. Firmar los datos
 
                                     // 3. Enviar los datos
@@ -66,13 +154,13 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                     )
-                    .
+                            .
 
-                            setNegativeButton(android.R.string.no, null)
+                    setNegativeButton(android.R.string.no, null)
 
-                    .
+                            .
 
-                            show();
+                    show();
         }
     }
 
