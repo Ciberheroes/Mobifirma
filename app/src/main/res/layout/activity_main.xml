@@ -37,4 +37,66 @@
         android:checked="false"
         android:text="Sábanas" />
 
+    <EditText
+        android:id="@+id/bedNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="105dp"
+        android:inputType="number"
+        android:text="Camas" />
+
+    <EditText
+        android:id="@+id/tableNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="187dp"
+        android:inputType="number"
+        android:text="Mesas" />
+
+    <EditText
+        android:id="@+id/chairNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="19dp"
+        android:layout_marginLeft="19dp"
+        android:layout_marginTop="333dp"
+        android:inputType="number"
+        android:text="Sillones" />
+
+    <EditText
+        android:id="@+id/couchNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="19dp"
+        android:layout_marginLeft="19dp"
+        android:layout_marginTop="259dp"
+        android:inputType="number"
+        android:text="Sillones" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Petición de material"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:typeface="normal" />
+
+
 </RelativeLayout>

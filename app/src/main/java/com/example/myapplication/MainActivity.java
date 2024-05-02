@@ -39,7 +39,9 @@ public class MainActivity extends AppCompatActivity {
     // Creación de un cuadro de dialogo para confirmar pedido
     private void showDialog() throws Resources.NotFoundException {
         CheckBox sabanas = (CheckBox) findViewById(R.id.checkBox_sabanas);
-
+        CheckBox toallas = (CheckBox) findViewById(R.id.checkBox_toallas);
+        CheckBox almohadas = (CheckBox) findViewById(R.id.checkBox_almohadas);
+        
         if (!sabanas.isChecked()) {
             // Mostramos un mensaje emergente;
             Toast.makeText(getApplicationContext(), "Selecciona al menos un elemento", Toast.LENGTH_SHORT).show();
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setTitle("Enviar")
                     .setMessage("Se va a proceder al envio")
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setIcon(android.R.drawable.ic_dialog_email)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                                 // Catch ok button and send information
