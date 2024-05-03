@@ -6,18 +6,17 @@
      tools:context="com.example.myapplication.MainActivity">
 
 
-
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enviar"
         android:id="@+id/button_send"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_width="174dp"
+        android:layout_height="65dp"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="35dp"
-        android:layout_marginEnd="35dp"
-        android:layout_marginBottom="35dp" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="118dp"
+        android:layout_marginRight="118dp"
+        android:layout_marginBottom="66dp"
+        android:text="Enviar" />
 
     <TextView
         android:id="@+id/bedNumberLabel"
@@ -156,6 +155,16 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
 
+    <EditText
+        android:id="@+id/userId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/maxMinWarning"
+        android:layout_marginTop="61dp"
+        android:ems="10"
+        android:hint="Número del cliente"
+        android:inputType="text"
+        android:translationX="100dp" />
 
 
 </RelativeLayout>
