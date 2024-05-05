@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.SocketTimeoutException;
 
 public class RequestTask extends AsyncTask<Void, Void, String> {
 
@@ -34,7 +35,7 @@ public class RequestTask extends AsyncTask<Void, Void, String> {
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
-
+            connection.setConnectTimeout(5000);
             // Escribir el JSON en el cuerpo de la solicitud
             DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
             byte[] input = jsonInputString.getBytes("utf-8");
@@ -49,21 +50,31 @@ public class RequestTask extends AsyncTask<Void, Void, String> {
 
             // Cerrar la conexión
             connection.disconnect();
+        } catch (SocketTimeoutException e) {
+            // Manejar la excepción de tiempo de espera
+            e.printStackTrace();
+            response.append("Error: Tiempo de espera de conexión excedido.");
         } catch (Exception e) {
+            // Manejar otras excepciones
             e.printStackTrace();
             response.append("Error: ").append(e.getMessage());
         }
         return response.toString();
     }
 
+
     @Override
     protected void onPostExecute(String result) {
-        if (listener != null) {
+        if (listener != null && !result.contains("Error")) {
             listener.onRequestResult(result);
+        } else if (listener != null) {
+            listener.onRequestFailure(result);
         }
+
     }
 
     public interface OnRequestListener {
         void onRequestResult(String result);
+        void onRequestFailure(String errorMessage);
     }
 }

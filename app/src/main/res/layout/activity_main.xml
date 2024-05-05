@@ -156,7 +156,7 @@
         android:layout_marginTop="20dp" />
 
     <EditText
-        android:id="@+id/userId"
+        android:id="@+id/clientId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/maxMinWarning"
@@ -164,6 +164,7 @@
         android:ems="10"
         android:hint="Número del cliente"
         android:inputType="text"
+        android:maxLength="18"
         android:translationX="100dp" />
 
 

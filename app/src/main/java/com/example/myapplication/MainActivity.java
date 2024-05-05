@@ -54,11 +54,6 @@ public class MainActivity extends AppCompatActivity {
         final EditText mesas = (EditText) findViewById(R.id.tableNumber);
         final EditText sillones = (EditText) findViewById(R.id.couchNumber);
 
-        //camas.setText("0");
-        //sillas.setText("0");
-        //mesas.setText("0");
-        //sillones.setText("0");
-
         camas.setFilters(new InputFilter[]{new InputFilterMinMax("0", "300")});
         sillas.setFilters(new InputFilter[]{new InputFilterMinMax("0", "300")});
         mesas.setFilters(new InputFilter[]{new InputFilterMinMax("0", "300")});
@@ -72,11 +67,14 @@ public class MainActivity extends AppCompatActivity {
         String sillas = parseInput(((EditText) findViewById(R.id.chairNumber)).getText().toString());
         String mesas = parseInput(((EditText) findViewById(R.id.tableNumber)).getText().toString());
         String sillones = parseInput(((EditText) findViewById(R.id.couchNumber)).getText().toString());
-
-        if ((camas.equals("0") && sillas.equals("0") && mesas.equals("0") && sillones.equals("0"))) {
-            // Mostramos un mensaje emergente;
+        String clientId = ((EditText) findViewById(R.id.clientId)).getText().toString();
+        if (camas.equals("0") && sillas.equals("0") && mesas.equals("0") && sillones.equals("0")) {
             Toast.makeText(getApplicationContext(), "Selecciona al menos un elemento", Toast.LENGTH_SHORT).show();
         } else {
+            if (clientId.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Introduce un ID de cliente", Toast.LENGTH_SHORT).show();
+                return;
+            }
             new AlertDialog.Builder(this)
                     .setTitle("Enviar")
                     .setMessage("Se va a proceder al envio")
@@ -89,17 +87,20 @@ public class MainActivity extends AppCompatActivity {
 
                                     // 2. Firmar los datos
 
+                                    JSONObject jsonObject = new JSONObject();
+                                    try {
+                                        jsonObject.put("camas", camas);
+                                        jsonObject.put("sillas", sillas);
+                                        jsonObject.put("mesas", mesas);
+                                        jsonObject.put("sillones", sillones);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+
                                     // 3. Enviar los datos
                                     try{
-                                        JSONObject jsonObject = new JSONObject();
-                                        try {
-                                            jsonObject.put("camas", camas);
-                                            jsonObject.put("sillas", sillas);
-                                            jsonObject.put("mesas", mesas);
-                                            jsonObject.put("sillones", sillones);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
                                         RequestTask task = new RequestTask(jsonObject.toString(), "http://"+server+":"+port+"/request", new RequestTask.OnRequestListener() {
                                             @Override
                                             public void onRequestResult(String result) {
@@ -109,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
                                                     e.printStackTrace();
                                                     Toast.makeText(MainActivity.this, "Error al enviar petición", Toast.LENGTH_SHORT).show();
                                                 }
+                                            }
+
+                                            @Override
+                                            public void onRequestFailure(String errorMessage) {
+                                                // Manejar el error de solicitud aquí
+                                                Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                         task.execute();
