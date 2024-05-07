@@ -14,6 +14,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.File;
 import java.util.Base64;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,13 +34,15 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     // Setup Server information
-    protected static String server = "http://192.168.1.133";
-    protected static int port = 7070;
+    protected static String server = "http://192.168.1.139";
+    protected static int port = 3343;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        copySSLFile();
         System.setProperty("javax.net.ssl.trustStore", this.getFilesDir().getAbsolutePath());
         System.setProperty("javax.net.ssl.trustStorePassword", "ciberheroes");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -160,6 +167,22 @@ public class MainActivity extends AppCompatActivity {
             return "0";
         }
     }
+    private void copySSLFile() {
+        try {
+            File destinationFile = new File(this.getFilesDir(), "keystore.jks");
+            try (InputStream inputStream = getAssets().open("keystore.jks")) {
+                try (FileOutputStream outputStream = new FileOutputStream(destinationFile)) {
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = inputStream.read(buffer)) > 0) {
+                        outputStream.write(buffer, 0, length);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public static class InputFilterMinMax implements InputFilter {
@@ -196,5 +219,7 @@ public class MainActivity extends AppCompatActivity {
         private boolean isInRange(int a, int b, int c) {
             return b > a ? c >= a && c <= b : c >= b && c <= a;
         }
+
+
     }
 }

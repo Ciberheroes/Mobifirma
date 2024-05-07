@@ -24,48 +24,6 @@ public class RequestTask extends AsyncTask<Void, Void, String> {
         this.listener = listener;
     }
 
-
-    /*
-    @Override
-    protected String doInBackground(Void... voids) {
-        StringBuilder response = new StringBuilder();
-        try {
-            // URL de destino para la solicitud POST (debe ser HTTPS)
-            URL url = new URL(stringURL);
-
-            // Abrir conexión
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-            // Configurar la solicitud
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setDoOutput(true);
-            connection.setConnectTimeout(5000);
-            // Escribir el JSON en el cuerpo de la solicitud
-            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-            byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-            wr.write(input, 0, input.length);
-
-            // Leer la respuesta
-            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
-            String responseLine;
-            while ((responseLine = br.readLine()) != null) {
-                response.append(responseLine.trim());
-            }
-
-            // Cerrar la conexión
-            connection.disconnect();
-        } catch (SocketTimeoutException e) {
-            // Manejar la excepción de tiempo de espera
-            e.printStackTrace();
-            response.append("Error: Tiempo de espera de conexión excedido.");
-        } catch (Exception e) {
-            // Manejar otras excepciones
-            e.printStackTrace();
-            response.append("Error: ").append(e.getMessage());
-        }
-        return response.toString();
-    }*/
     @Override
     protected String doInBackground(Void... voids) {
         try {
