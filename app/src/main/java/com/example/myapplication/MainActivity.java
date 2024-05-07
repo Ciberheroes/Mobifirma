@@ -3,30 +3,39 @@ package com.example.myapplication;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.Resources;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
 import android.graphics.Typeface;
+import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+import java.util.Base64;
+
 import androidx.appcompat.app.AppCompatActivity;
-import android.text.InputFilter;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.security.KeyPair;
+import java.security.Signature;
+import java.util.Arrays;
 
 
 public class MainActivity extends AppCompatActivity {
 
     // Setup Server information
-    protected static String server = "192.168.1.133";
+    protected static String server = "http://192.168.1.133";
     protected static int port = 7070;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.setProperty("javax.net.ssl.trustStore", this.getFilesDir().getAbsolutePath());
+        System.setProperty("javax.net.ssl.trustStorePassword", "ciberheroes");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -41,24 +50,19 @@ public class MainActivity extends AppCompatActivity {
         View button = findViewById(R.id.button_send);
 
         // Llama al listener del boton Enviar
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialog();
-            }
-        });
+        button.setOnClickListener(view -> showDialog());
 
         // Capturamos los campos de texto
-        final EditText camas = (EditText) findViewById(R.id.bedNumber);
-        final EditText sillas = (EditText) findViewById(R.id.chairNumber);
-        final EditText mesas = (EditText) findViewById(R.id.tableNumber);
-        final EditText sillones = (EditText) findViewById(R.id.couchNumber);
+        final EditText camas =  findViewById(R.id.bedNumber);
+        final EditText sillas = findViewById(R.id.chairNumber);
+        final EditText mesas = findViewById(R.id.tableNumber);
+        final EditText sillones = findViewById(R.id.couchNumber);
 
         camas.setFilters(new InputFilter[]{new InputFilterMinMax("0", "300")});
         sillas.setFilters(new InputFilter[]{new InputFilterMinMax("0", "300")});
         mesas.setFilters(new InputFilter[]{new InputFilterMinMax("0", "300")});
         sillones.setFilters(new InputFilter[]{new InputFilterMinMax("0", "300")});
-        
+     
     }
 
     // Creación de un cuadro de dialogo para confirmar pedido
@@ -76,63 +80,76 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             new AlertDialog.Builder(this)
-                    .setTitle("Enviar")
-                    .setMessage("Se va a proceder al envio")
-                    .setIcon(android.R.drawable.ic_dialog_email)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setTitle("Enviar")
+                .setMessage("Se va a proceder al envio")
+                .setIcon(android.R.drawable.ic_dialog_email)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
-                                // Catch ok button and send information
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    // 1. Extraer los datos de la vista (Hecho arriba)
+                    // Catch ok button and send information
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // 1. Extraer los datos de la vista (Hecho arriba)
 
-                                    // 2. Firmar los datos
+                        // 2. Firmar los datos
 
-                                    JSONObject jsonObject = new JSONObject();
-                                    try {
-                                        jsonObject.put("camas", camas);
-                                        jsonObject.put("sillas", sillas);
-                                        jsonObject.put("mesas", mesas);
-                                        jsonObject.put("sillones", sillones);
-                                    } catch (JSONException e) {
+                        JSONObject jsonData = new JSONObject();
+                        JSONObject message = new JSONObject();
+                        try {
+                            message.put("camas", camas);
+                            message.put("sillas", sillas);
+                            message.put("mesas", mesas);
+                            message.put("sillones", sillones);
+                            jsonData.put("message", message);
+                            jsonData.put("clientId", clientId);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        KeyPair keys = null;
+
+                        try{
+                            keys = KeyStoreManager.generateKeyPair(getApplicationContext());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        try{
+                            Signature signature = Signature.getInstance("SHA256withRSA");
+                            //String publicKeyStr = Base64.getEncoder().encodeToString(keys.getPublic().getEncoded());
+                            signature.initSign(keys.getPrivate());
+                            signature.update(message.toString().getBytes());
+                            byte[] signedData = signature.sign();
+                            jsonData.put("signature", Arrays.toString(signedData));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+                        // 3. Enviar los datos
+                        try{
+                            RequestTask task = new RequestTask(jsonData.toString(), server,port, new RequestTask.OnRequestListener() {
+                                @Override
+                                public void onRequestResult(String result) {
+                                   try {
+                                        Toast.makeText(MainActivity.this, "Petición enviada", Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
                                         e.printStackTrace();
-                                    }
-
-
-
-                                    // 3. Enviar los datos
-                                    try{
-                                        RequestTask task = new RequestTask(jsonObject.toString(), "http://"+server+":"+port+"/request", new RequestTask.OnRequestListener() {
-                                            @Override
-                                            public void onRequestResult(String result) {
-                                               try {
-                                                    Toast.makeText(MainActivity.this, "Petición enviada", Toast.LENGTH_SHORT).show();
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                    Toast.makeText(MainActivity.this, "Error al enviar petición", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onRequestFailure(String errorMessage) {
-                                                // Manejar el error de solicitud aquí
-                                                Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                        task.execute();
-                                        } catch (Exception e) {
-                                        e.printStackTrace();
+                                        Toast.makeText(MainActivity.this, "Error al enviar petición", Toast.LENGTH_SHORT).show();
                                     }
                                 }
-                            }
 
-                    )
-                            .
-
-                    setNegativeButton(android.R.string.no, null)
-
-                            .
-
-                    show();
+                                @Override
+                                public void onRequestFailure(String errorMessage) {
+                                    // Manejar el error de solicitud aquí
+                                    Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            task.execute();
+                            } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).setNegativeButton(android.R.string.no, null)
+                .show();
         }
     }
 
@@ -168,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
                 if (inputText.startsWith("0") && !inputText.equals("0")) {
                     return "";
                 }
-                int input = Integer.parseInt(dest.subSequence(0, dstart).toString() + source + dest.subSequence(dend, dest.length()).toString());
+                int input = Integer.parseInt(dest.subSequence(0, dstart).toString() + source + dest.subSequence(dend, dest.length()));
                 if (isInRange(min, max, input))
                     return null;
             } catch (NumberFormatException ignored) {
