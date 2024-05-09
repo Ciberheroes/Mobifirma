@@ -34,8 +34,8 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     // Setup Server information
-    //protected static String server = "192.168.1.139";
-    protected static String server = "10.0.2.2";
+    protected static String server = "192.168.1.139";
+    //protected static String server = "10.0.2.2";
     protected static int port = 3343;
 
     @Override

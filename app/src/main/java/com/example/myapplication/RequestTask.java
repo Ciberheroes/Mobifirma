@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.SocketTimeoutException;
 
 import javax.net.ssl.SSLContext;
@@ -81,24 +82,21 @@ public class RequestTask extends AsyncTask<Void, Void, String> {
             final SSLSocketFactory factory = sslContext.getSocketFactory();
 
             BufferedReader input;
-            DataOutputStream output;
+            PrintWriter output;
             SSLSocket socket = (SSLSocket) factory.createSocket(stringURL, port);
             //socket.setSoTimeout(5000);
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            output = new DataOutputStream(socket.getOutputStream());
+            output = new PrintWriter(socket.getOutputStream());
 
-            output.writeBytes(jsonInputString);
+            output.println(jsonInputString);
             output.flush();
 
-            StringBuilder response = new StringBuilder();
-            String line;
+            String response = input.readLine();
             output.close();
-            while ((line = input.readLine()) != null) {
-                response.append(line);
-            }
             input.close();
             socket.close();
-            return response.toString();
+
+            return response;
         } catch (SocketTimeoutException e) {
             return "Error: Tiempo de espera de conexión excedido.";
         } catch (Exception e) {
