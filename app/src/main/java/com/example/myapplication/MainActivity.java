@@ -141,12 +141,7 @@ public class MainActivity extends AppCompatActivity {
                             RequestTask task = new RequestTask(MainActivity.this, jsonData.toString(), server, port, new RequestTask.OnRequestListener() {
                                 @Override
                                 public void onRequestResult(String result) {
-                                   try {
-                                        Toast.makeText(MainActivity.this, "Petición enviada", Toast.LENGTH_SHORT).show();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                        Toast.makeText(MainActivity.this, "Error al enviar petición", Toast.LENGTH_SHORT).show();
-                                    }
+                                    Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
                                 }
 
                                 @Override

@@ -104,28 +104,28 @@
 
     <TextView
         android:id="@+id/couchNumberLabel"
-        android:layout_width="85dp"
-        android:layout_height="37dp"
+        android:layout_width="214dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/bedNumberLabel"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginStart="87dp"
         android:layout_marginLeft="87dp"
-        android:layout_marginTop="182dp"
+        android:layout_marginTop="191dp"
         android:text="Sillones"
         android:textSize="22sp" />
 
 
     <TextView
         android:id="@+id/maxMinWarning"
-        android:layout_width="161dp"
-        android:layout_height="41dp"
+        android:layout_width="272dp"
+        android:layout_height="45dp"
         android:layout_below="@+id/couchNumberLabel"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginStart="13dp"
         android:layout_marginLeft="13dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:text="Min: 0 Max: 300"
         android:textSize="22sp" />
 
