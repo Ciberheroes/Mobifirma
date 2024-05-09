@@ -92,10 +92,10 @@ public class RequestTask extends AsyncTask<Void, Void, String> {
 
             StringBuilder response = new StringBuilder();
             String line;
+            output.close();
             while ((line = input.readLine()) != null) {
                 response.append(line);
             }
-            output.close();
             input.close();
             socket.close();
             return response.toString();
