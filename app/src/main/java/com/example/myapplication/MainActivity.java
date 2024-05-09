@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Setup Server information
     //protected static String server = "192.168.1.139";
-    protected static String server = "192.168.0.31";
+    protected static String server = "10.0.2.2";
     protected static int port = 3343;
 
     @Override
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                             message.put("sillas", sillas);
                             message.put("mesas", mesas);
                             message.put("sillones", sillones);
-                            jsonData.put("message", message);
+                            jsonData.put("message", message.toString());
                             jsonData.put("clientId", clientId);
                         } catch (JSONException e) {
                             e.printStackTrace();
