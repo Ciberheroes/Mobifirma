@@ -12,8 +12,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
 
 
@@ -56,7 +61,7 @@ public class KeyStoreManager {
         return keyPair;
     }*/
 
-    public static KeyPair generateKeyPair(Context context) throws Exception {
+    public static KeyPair getKeyPair(Context context) throws Exception {
         KeyPair keyPair = null;
         File file = new File(context.getFilesDir(), "keys.txt");
         file.delete();
@@ -84,17 +89,57 @@ public class KeyStoreManager {
 
         try{
             String[] keys = keyString.split("\n");
-            String publicKeyString = keys[0];
-            String privateKeyString = keys[1];
+            byte[] publicKeyString = convertStringToBytes(keys[0]);
+            byte[] privateKeyString = convertStringToBytes(keys[1]);
             keyPair = new KeyPair(
-                    KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyString))),
-                    KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyString)))
+                    KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(publicKeyString)),
+                    KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(privateKeyString))
             );
         } catch (Exception e) {
                 e.printStackTrace();
         }
 
         return keyPair;
+    }
+
+    public static byte[] convertStringToBytes(String cadenaStr) {
+        String cadena = cadenaStr.replace("[", "").replace("]", "").replace("\r", "");
+
+        // Dividir la cadena por las comas y los espacios
+        String[] partes = cadena.split(", ");
+
+        // Crear un array de bytes
+        byte[] arrayBytes = new byte[partes.length];
+
+        // Convertir cada parte de la cadena a un byte y almacenarlo en el array de bytes
+        for (int i = 0; i < partes.length; i++) {
+            arrayBytes[i] = Byte.parseByte(partes[i]);
+        }
+        return arrayBytes;
+    }
+
+    public static String generateKey(Context context) throws Exception {
+        try {
+            // Generar un par de claves RSA
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(2048); // Tamaño de la clave
+            KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+            // Obtener la clave pública y privada del par de claves
+            PublicKey publicKey = keyPair.getPublic();
+            PrivateKey privateKey = keyPair.getPrivate();
+
+            // Codificar la clave pública y privada en Base64
+            String publicKeyBase64 = Arrays.toString(publicKey.getEncoded());
+            String privateKeyBase64 = Arrays.toString(privateKey.getEncoded());
+
+            return "publicKeyBase64 + \n\n + privateKeyBase64";
+            // Imprimir las claves codificadas en Base64
+        } catch (NoSuchAlgorithmException e) {
+            // Manejar excepciones
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

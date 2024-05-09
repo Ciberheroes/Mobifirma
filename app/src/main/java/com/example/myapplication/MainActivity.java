@@ -34,7 +34,8 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     // Setup Server information
-    protected static String server = "http://192.168.1.139";
+    //protected static String server = "192.168.1.139";
+    protected static String server = "192.168.0.31";
     protected static int port = 3343;
 
     @Override
@@ -112,9 +113,13 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         KeyPair keys = null;
-
+                        try {
+                            KeyStoreManager.generateKey(getApplicationContext());
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         try{
-                            keys = KeyStoreManager.generateKeyPair(getApplicationContext());
+                            keys = KeyStoreManager.getKeyPair(getApplicationContext());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -133,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // 3. Enviar los datos
                         try{
-                            RequestTask task = new RequestTask(jsonData.toString(), server,port, new RequestTask.OnRequestListener() {
+                            RequestTask task = new RequestTask(MainActivity.this, jsonData.toString(), server, port, new RequestTask.OnRequestListener() {
                                 @Override
                                 public void onRequestResult(String result) {
                                    try {
